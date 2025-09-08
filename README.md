@@ -115,6 +115,8 @@ bin/rails test
 
 ## Deployment
 
+### Using Kamal
+
 The application is configured for deployment using Kamal:
 
 ```bash
@@ -122,6 +124,25 @@ make deploy
 # or
 bundle exec kamal deploy
 ```
+
+### Using Railway
+
+This application is configured for easy deployment on [Railway](https://railway.app/):
+
+1. Create a new project on Railway
+
+2. Add a PostgreSQL database service to your project
+
+3. Connect your GitHub repository to Railway
+
+4. Set the following environment variables in your Railway project:
+   - `RAILS_MASTER_KEY`: Your Rails master key (from config/master.key)
+   - `RAILS_ENV`: production
+   - `RAILWAY_PUBLIC_DOMAIN`: Your app's domain (e.g., pokeapp.up.railway.app)
+
+5. Deploy your application
+
+Railway will automatically detect the Procfile and deploy your application with the correct configuration.
 
 ## Contributing
 

@@ -19,6 +19,7 @@ Rails.application.routes.draw do
 
   # Caught Pokemon routes
   get  "/caught", to: "caught_pokemons#index"
+  delete "/caught/:id/release", to: "caught_pokemons#release", as: :release_pokemon
   # JSON API
   namespace :api do
     resources :caught_pokemons, only: [:index]
