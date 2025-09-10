@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "pokemon": {
+      "command": "ruby",
+      "args": ["mcp_server.rb"],
+      "cwd": "/Users/apk/dev/ruby/pokeapp",
+      "env": {
+        "RAILS_ENV": "development"
+      }
+    }
+  }
+}
