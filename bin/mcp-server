@@ -1,0 +1,9 @@
+#!/usr/bin/env ruby
+
+# MCP Server startup script for Railway deployment
+# This script ensures the Rails environment is loaded before starting the MCP server
+
+require_relative '../config/environment'
+
+# Start the MCP server
+exec 'ruby', File.join(__dir__, '..', 'mcp_server.rb')
