@@ -13,7 +13,7 @@ class PokemonMcpServer
 
   def start
     @logger.info "Starting Pokémon MCP Server..."
-    
+
     # Read from STDIN and write to STDOUT for MCP communication
     STDIN.each_line do |line|
       begin
@@ -91,7 +91,7 @@ class PokemonMcpServer
                   description: "Pokémon name or ID to search for"
                 }
               },
-              required: ["query"]
+              required: [ "query" ]
             }
           },
           {
@@ -123,7 +123,7 @@ class PokemonMcpServer
                   description: "Email of the user attempting to catch"
                 }
               },
-              required: ["pokemon_id", "user_email"]
+              required: [ "pokemon_id", "user_email" ]
             }
           },
           {
@@ -137,7 +137,7 @@ class PokemonMcpServer
                   description: "Email of the user"
                 }
               },
-              required: ["user_email"]
+              required: [ "user_email" ]
             }
           },
           {
@@ -155,7 +155,7 @@ class PokemonMcpServer
                   description: "Database ID of the caught Pokémon to release"
                 }
               },
-              required: ["user_email", "pokemon_id"]
+              required: [ "user_email", "pokemon_id" ]
             }
           },
           {
@@ -169,7 +169,7 @@ class PokemonMcpServer
                   description: "ID or name of the Pokémon"
                 }
               },
-              required: ["pokemon_id"]
+              required: [ "pokemon_id" ]
             }
           }
         ]
@@ -182,21 +182,21 @@ class PokemonMcpServer
     arguments = params['arguments'] || {}
 
     result = case tool_name
-             when 'search_pokemon'
+    when 'search_pokemon'
                search_pokemon(arguments['query'])
-             when 'get_random_pokemon'
+    when 'get_random_pokemon'
                get_random_pokemon(arguments['max_id'] || 898)
-             when 'attempt_catch_pokemon'
+    when 'attempt_catch_pokemon'
                attempt_catch_pokemon(arguments['pokemon_id'], arguments['user_email'])
-             when 'get_user_collection'
+    when 'get_user_collection'
                get_user_collection(arguments['user_email'])
-             when 'release_pokemon'
+    when 'release_pokemon'
                release_pokemon(arguments['user_email'], arguments['pokemon_id'])
-             when 'get_pokemon_stats'
+    when 'get_pokemon_stats'
                get_pokemon_stats(arguments['pokemon_id'])
-             else
+    else
                return error_response("Unknown tool: #{tool_name}", id)
-             end
+    end
 
     {
       jsonrpc: "2.0",
@@ -237,15 +237,15 @@ class PokemonMcpServer
 
   def read_resource_response(id, params)
     uri = params['uri']
-    
+
     result = case uri
-             when "pokemon://collections"
+    when "pokemon://collections"
                get_all_collections
-             when "pokemon://stats/global"
+    when "pokemon://stats/global"
                get_global_stats
-             else
+    else
                return error_response("Unknown resource: #{uri}", id)
-             end
+    end
 
     {
       jsonrpc: "2.0",
@@ -305,7 +305,7 @@ class PokemonMcpServer
     end
 
     pokemon_data = PokeApi.fetch_pokemon(pokemon_id)
-    
+
     if CatchLogic.success?(pokemon_data[:base_experience])
       caught_pokemon = CaughtPokemon.create!(
         user: user,
@@ -315,7 +315,7 @@ class PokemonMcpServer
         sprite_url: pokemon_data[:sprite_url],
         caught_at: Time.current
       )
-      
+
       {
         success: true,
         message: "Gotcha! You caught #{pokemon_data[:name].capitalize}.",
@@ -389,10 +389,10 @@ class PokemonMcpServer
 
   def get_pokemon_stats(pokemon_id)
     pokemon_data = PokeApi.fetch_pokemon(pokemon_id)
-    
+
     # Get additional stats from database
     catch_attempts = CaughtPokemon.where(poke_id: pokemon_data[:poke_id]).count
-    
+
     {
       success: true,
       pokemon: pokemon_data,
@@ -440,7 +440,7 @@ class PokemonMcpServer
     total_pokemon_caught = CaughtPokemon.count
     total_users = User.count
     users_with_pokemon = User.joins(:caught_pokemons).distinct.count
-    
+
     most_caught_pokemon = CaughtPokemon.group(:name)
                                       .count
                                       .max_by { |_, count| count }
@@ -474,7 +474,7 @@ unless defined?(CatchLogic)
   class CatchLogic
     def self.success?(base_experience)
       return true if base_experience.nil? || base_experience == 0
-      
+
       # Higher base experience = harder to catch
       # Scale: 0-300 base exp, with diminishing catch probability
       probability = catch_probability(base_experience)
@@ -483,14 +483,14 @@ unless defined?(CatchLogic)
 
     def self.catch_probability(base_experience)
       return 1.0 if base_experience.nil? || base_experience == 0
-      
+
       # Formula: starts at 90% for 0 exp, decreases to ~10% for 300+ exp
       base_prob = 0.9
       difficulty_factor = base_experience / 300.0
       final_prob = base_prob * (1 - (difficulty_factor * 0.8))
-      
+
       # Ensure probability is between 0.1 and 0.9
-      [[final_prob, 0.1].max, 0.9].min
+      [ [ final_prob, 0.1 ].max, 0.9 ].min
     end
   end
 end
