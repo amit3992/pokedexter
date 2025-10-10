@@ -28,5 +28,9 @@ Rails.application.routes.draw do
   # JSON API
   namespace :api do
     resources :caught_pokemons, only: [ :index ]
+
+    # User-based API endpoints (email-based lookup)
+    get "/users/caught_pokemons", to: "users_caught_pokemons#index"
+    delete "/users/caught_pokemons/:id", to: "users_caught_pokemons#release"
   end
 end
