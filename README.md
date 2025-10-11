@@ -101,7 +101,146 @@ make help
 
 ## API Endpoints
 
-- `GET /api/caught_pokemons`: Returns a JSON list of the current user's caught Pokémon
+The PokeApp provides a RESTful API for accessing your caught Pokémon collection. All API endpoints require JWT authentication.
+
+### Authentication
+
+#### Obtaining a JWT Token
+
+To access the API, you first need to obtain a JWT token by logging in with your email:
+
+**Request:**
+```bash
+curl -X POST http://localhost:3000/api/login \
+  -H "Content-Type: application/json" \
+  -d '{"email": "user@example.com"}'
+```
+
+**Response:**
+```json
+{
+  "token": "eyJhbGciOiJIUzI1NiJ9...",
+  "user": {
+    "id": 1,
+    "email": "user@example.com"
+  }
+}
+```
+
+The token expires after 24 hours. If you receive a "Token has expired" error, you'll need to obtain a new token.
+
+#### Refreshing Your Token
+
+You can refresh an existing token before it expires:
+
+**Request:**
+```bash
+curl -X POST http://localhost:3000/api/refresh \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+```
+
+**Response:**
+```json
+{
+  "token": "eyJhbGciOiJIUzI1NiJ9...",
+  "user": {
+    "id": 1,
+    "email": "user@example.com"
+  }
+}
+```
+
+### Making Authenticated API Calls
+
+Include the JWT token in the `Authorization` header of your requests using the `Bearer` scheme:
+
+```bash
+curl -X GET http://localhost:3000/api/users/caught_pokemons \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+```
+
+### Available Endpoints
+
+#### Get Caught Pokémon
+
+- **Endpoint:** `GET /api/caught_pokemons`
+- **Authentication:** Required
+- **Description:** Returns a JSON list of the current user's caught Pokémon
+
+**Example:**
+```bash
+curl -X GET http://localhost:3000/api/caught_pokemons \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+```
+
+**Response:**
+```json
+[
+  {
+    "id": 1,
+    "name": "pikachu",
+    "base_experience": 112,
+    "sprite_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
+    "created_at": "2025-01-10T12:34:56.789Z"
+  }
+]
+```
+
+#### Get User's Caught Pokémon
+
+- **Endpoint:** `GET /api/users/caught_pokemons`
+- **Authentication:** Required
+- **Description:** Returns a JSON list of the authenticated user's caught Pokémon
+
+**Example:**
+```bash
+curl -X GET http://localhost:3000/api/users/caught_pokemons \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+```
+
+#### Release a Pokémon
+
+- **Endpoint:** `DELETE /api/users/caught_pokemons/:id`
+- **Authentication:** Required
+- **Description:** Releases (deletes) a caught Pokémon from your collection
+
+**Example:**
+```bash
+curl -X DELETE http://localhost:3000/api/users/caught_pokemons/1 \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+```
+
+**Response:**
+```json
+{
+  "message": "Pokemon released successfully"
+}
+```
+
+### Error Responses
+
+The API returns appropriate HTTP status codes and error messages:
+
+- **401 Unauthorized:** Missing, invalid, or expired token
+  ```json
+  {
+    "error": "Token has expired"
+  }
+  ```
+
+- **404 Not Found:** User or resource not found
+  ```json
+  {
+    "error": "User not found"
+  }
+  ```
+
+- **422 Unprocessable Entity:** Invalid request parameters
+  ```json
+  {
+    "error": "Email is required"
+  }
+  ```
 
 ## Testing
 

@@ -27,9 +27,13 @@ Rails.application.routes.draw do
   delete "/caught/:id/release", to: "caught_pokemons#release", as: :release_pokemon
   # JSON API
   namespace :api do
+    # JWT Authentication
+    post "/login", to: "sessions#create"
+    post "/refresh", to: "sessions#refresh"
+
     resources :caught_pokemons, only: [ :index ]
 
-    # User-based API endpoints (email-based lookup)
+    # User-based API endpoints (JWT authentication required)
     get "/users/caught_pokemons", to: "users_caught_pokemons#index"
     delete "/users/caught_pokemons/:id", to: "users_caught_pokemons#release"
   end

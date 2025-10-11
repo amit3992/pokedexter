@@ -1,43 +1,22 @@
 module Api
   class UsersCaughtPokemonsController < ApplicationController
+    include ApiAuthenticatable
     protect_from_forgery with: :null_session
     skip_before_action :require_login
 
-    # GET /api/users/caught_pokemons?email=user@example.com
+    # GET /api/users/caught_pokemons
+    # Requires JWT authentication via Authorization header
     def index
-      if params[:email].blank?
-        render json: { error: "Email parameter is required" }, status: :unprocessable_entity
-        return
-      end
-
-      user = User.find_by(email: params[:email])
-
-      if user.nil?
-        render json: { error: "User not found" }, status: :not_found
-        return
-      end
-
-      caught_pokemons = user.caught_pokemons.order(caught_at: :desc)
+      caught_pokemons = current_api_user.caught_pokemons.order(caught_at: :desc)
       render json: caught_pokemons.as_json(
         only: [ :id, :poke_id, :name, :base_experience, :sprite_url, :caught_at ]
       )
     end
 
-    # DELETE /api/users/caught_pokemons/:id?email=user@example.com
+    # DELETE /api/users/caught_pokemons/:id
+    # Requires JWT authentication via Authorization header
     def release
-      if params[:email].blank?
-        render json: { error: "Email parameter is required" }, status: :unprocessable_entity
-        return
-      end
-
-      user = User.find_by(email: params[:email])
-
-      if user.nil?
-        render json: { error: "User not found" }, status: :not_found
-        return
-      end
-
-      pokemon = user.caught_pokemons.find_by(id: params[:id])
+      pokemon = current_api_user.caught_pokemons.find_by(id: params[:id])
 
       if pokemon.nil?
         render json: { error: "Pokémon not found or does not belong to this user" }, status: :not_found
