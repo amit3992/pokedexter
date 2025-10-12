@@ -283,6 +283,17 @@ This application is configured for easy deployment on [Railway](https://railway.
 
 Railway will automatically detect the Procfile and deploy your application with the correct configuration.
 
+**Note:** If you have Intercom Messenger enabled, see [RAILWAY_INTERCOM_SETUP.md](./RAILWAY_INTERCOM_SETUP.md) for setting up Identity Verification in Railway.
+
+## Intercom Integration
+
+This app includes Intercom Messenger for user support. To configure Intercom Identity Verification:
+
+- **Local Development:** See [INTERCOM_SETUP.md](./INTERCOM_SETUP.md)
+- **Railway Deployment:** See [RAILWAY_INTERCOM_SETUP.md](./RAILWAY_INTERCOM_SETUP.md)
+
+Intercom Identity Verification ensures secure user authentication in the messenger widget.
+
 ## Contributing
 
 1. Fork the repository
