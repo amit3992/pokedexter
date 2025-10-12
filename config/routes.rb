@@ -31,6 +31,9 @@ Rails.application.routes.draw do
     post "/login", to: "sessions#create"
     post "/refresh", to: "sessions#refresh"
 
+    # Pokemon information (public endpoint)
+    get "/pokemon/:name", to: "pokemons#show"
+
     resources :caught_pokemons, only: [ :index ]
 
     # User-based API endpoints (JWT authentication required)

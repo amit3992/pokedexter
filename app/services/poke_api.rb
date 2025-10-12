@@ -12,6 +12,11 @@ class PokeApi
       sprite_url:      json.dig("sprites", "front_default")
     }
   end
+
+  def self.fetch_pokemon_by_name(name)
+    fetch_pokemon(name.downcase)
+  end
+
   def self.random_id(max: 898) # Gen 1–8 common set pokemons
     rand(1..max)
   end
