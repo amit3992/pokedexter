@@ -1,6 +1,6 @@
 module Api
   class SessionsController < ApplicationController
-    skip_before_action :require_login, only: [ :create ]
+    skip_before_action :require_login, only: [ :create, :intercom_auth ]
     protect_from_forgery with: :null_session
 
     # POST /api/login
@@ -57,6 +57,33 @@ module Api
       rescue JsonWebToken::DecodeError, JsonWebToken::ExpirationError => e
         render json: { error: "Invalid or expired token" }, status: :unauthorized
       rescue ActiveRecord::RecordNotFound
+        render json: { error: "User not found" }, status: :not_found
+      end
+    end
+
+    # GET /api/intercom_auth?email=user@example.com
+    # Query params: email
+    # Response: { "token": "jwt_token", "user": { "id": 1, "email": "user@example.com" } }
+    def intercom_auth
+      email = params[:email]&.downcase&.strip
+
+      if email.blank?
+        render json: { error: "Email is required" }, status: :unprocessable_entity
+        return
+      end
+
+      user = User.find_by(email: email)
+
+      if user
+        token = JsonWebToken.encode(user_id: user.id)
+        render json: {
+          token: token,
+          user: {
+            id: user.id,
+            email: user.email
+          }
+        }, status: :ok
+      else
         render json: { error: "User not found" }, status: :not_found
       end
     end

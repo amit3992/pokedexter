@@ -30,6 +30,7 @@ Rails.application.routes.draw do
     # JWT Authentication
     post "/login", to: "sessions#create"
     post "/refresh", to: "sessions#refresh"
+    get "/intercom_auth", to: "sessions#intercom_auth"
 
     # Pokemon information (public endpoint)
     get "/pokemon/:name", to: "pokemons#show"
