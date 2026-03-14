@@ -36,7 +36,8 @@
           user_id: "<%= current_user.id %>",
           email: "<%= j current_user.email %>",
           created_at: <%= current_user.created_at.to_i %>,
-          user_hash: "<%= intercom_user_hash(current_user.id) %>"
+          user_hash: "<%= intercom_user_hash(current_user.id) %>",
+          "my-custom-attribute": "<%= random_intercom_phrase %>"
         };
       </script>
 
