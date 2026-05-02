@@ -1,4 +1,10 @@
 class Rack::Attack
+  # Use a per-process memory store so rate limiting doesn't depend on
+  # Rails.cache (Solid Cache requires a separate DB that may not exist
+  # on every deploy). Counters reset on restart and aren't shared across
+  # workers/instances — fine for a single-instance Railway deploy.
+  self.cache.store = ActiveSupport::Cache::MemoryStore.new
+
   # Throttle MCP requests by bearer token: 60 req/min per token.
   # Unauthenticated requests skip this throttle (they 401 in the controller).
   throttle("mcp/req per token", limit: 60, period: 60) do |req|
