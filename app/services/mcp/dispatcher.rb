@@ -59,7 +59,7 @@ module Mcp
           inputSchema: {
             type: "object",
             properties: { query: { type: "string", description: "Pokémon name (e.g. 'pikachu') or numeric id." } },
-            required: ["query"]
+            required: [ "query" ]
           }
         },
         {
@@ -79,7 +79,7 @@ module Mcp
               pokemon_id: { type: "string", description: "Name or numeric id of the Pokémon to catch." },
               user_email: { type: "string", description: "Email of the user attempting the catch (use the chatting contact's email)." }
             },
-            required: ["pokemon_id", "user_email"]
+            required: [ "pokemon_id", "user_email" ]
           }
         },
         {
@@ -90,7 +90,7 @@ module Mcp
             properties: {
               user_email: { type: "string", description: "Email of the user whose collection to fetch." }
             },
-            required: ["user_email"]
+            required: [ "user_email" ]
           }
         },
         {
@@ -102,7 +102,7 @@ module Mcp
               user_email: { type: "string", description: "Email of the user releasing the Pokémon." },
               pokemon_id: { type: "integer", description: "Database id from get_user_collection." }
             },
-            required: ["user_email", "pokemon_id"]
+            required: [ "user_email", "pokemon_id" ]
           }
         },
         {
@@ -111,7 +111,7 @@ module Mcp
           inputSchema: {
             type: "object",
             properties: { pokemon_id: { type: "string", description: "Name or numeric id of the Pokémon." } },
-            required: ["pokemon_id"]
+            required: [ "pokemon_id" ]
           }
         }
       ])
