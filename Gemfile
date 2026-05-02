@@ -68,3 +68,6 @@ group :test do
 end
 
 gem "httpx", "~> 1.6"
+
+# Rate limiting / throttling middleware
+gem "rack-attack"

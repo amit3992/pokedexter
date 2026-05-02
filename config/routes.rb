@@ -25,6 +25,9 @@ Rails.application.routes.draw do
   # Caught Pokemon routes
   get  "/caught", to: "caught_pokemons#index"
   delete "/caught/:id/release", to: "caught_pokemons#release", as: :release_pokemon
+
+  # MCP server endpoint (Streamable HTTP transport for Fin / remote MCP clients)
+  post "/mcp", to: "mcp#handle"
   # JSON API
   namespace :api do
     # JWT Authentication
